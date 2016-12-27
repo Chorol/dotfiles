@@ -3,7 +3,8 @@ syntax on
 "colorscheme peaksea
 set background=dark
 colorscheme solarized
-set guifont=Inconsolata\ Medium\ 11
+set guifont=Inconsolata\ Medium\ 10
+set linespace=1
 "set guifont=Hack\ Medium\ 11
 set nocompatible
 set t_Co=256
@@ -25,14 +26,12 @@ NeoBundle 'vim-scripts/restore_view.vim'
 NeoBundle 'vim-scripts/DoxygenToolkit.vim'
 "NeoBundle 'Yggdroot/indentLine'
 NeoBundle 'Konfekt/FastFold'
-NeoBundle 'Shougo/neocomplete.vim'
-NeoBundle 'Shougo/neosnippet'
-NeoBundle 'Shougo/neosnippet-snippets'
-NeoBundle 'ervandew/supertab'
+" NeoBundle 'ervandew/supertab'
 NeoBundle 'vim-scripts/mru.vim'
 NeoBundle 'maxbrunsfeld/vim-yankstack'
 NeoBundle 'itchyny/lightline.vim'
 NeoBundle 'jiangmiao/auto-pairs'
+NeoBundle 'Valloric/YouCompleteMe'
 
 "latex
 NeoBundleLazy 'LaTeX-Box-Team/LaTeX-Box'
