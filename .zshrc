@@ -120,5 +120,4 @@ alias docear="sh ~/Docear/docear.sh"
 alias android-studio="sh ~/android_studio/android-studio/bin/studio.sh"
 alias vimrc="gvim ~/.vimrc"
 
-source /home/jonas/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 eval $(dircolors ~/.dircolors)
