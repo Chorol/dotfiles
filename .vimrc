@@ -1,12 +1,9 @@
 syntax on
-"colorscheme northland
-"colorscheme peaksea
 set background=dark
 colorscheme solarized
-set guifont=Inconsolata\ Medium\ 10
-set linespace=1
-"set guifont=Hack\ Medium\ 11
+
 set nocompatible
+set guifont=Inconsolata\ 10
 set t_Co=256
 
 set runtimepath+=~/.vim/bundle/neobundle.vim/
@@ -24,14 +21,14 @@ NeoBundle 'majutsushi/tagbar'
 NeoBundle 'wesQ3/vim-windowswap'
 NeoBundle 'vim-scripts/restore_view.vim'
 NeoBundle 'vim-scripts/DoxygenToolkit.vim'
-"NeoBundle 'Yggdroot/indentLine'
-NeoBundle 'Konfekt/FastFold'
-" NeoBundle 'ervandew/supertab'
 NeoBundle 'vim-scripts/mru.vim'
 NeoBundle 'maxbrunsfeld/vim-yankstack'
-NeoBundle 'itchyny/lightline.vim'
-NeoBundle 'jiangmiao/auto-pairs'
 NeoBundle 'Valloric/YouCompleteMe'
+NeoBundle 'sheerun/vim-polyglot'
+NeoBundle 'vim-airline/vim-airline'
+NeoBundle 'vim-airline/vim-airline-themes'
+NeoBundle 'JamshedVesuna/vim-markdown-preview'
+NeoBundle 'Raimondi/delimitMate'
 
 "latex
 NeoBundleLazy 'LaTeX-Box-Team/LaTeX-Box'
@@ -66,6 +63,12 @@ autocmd BufEnter *.vert :setlocal filetype=cpp
 autocmd BufEnter *.frag :setlocal filetype=cpp
 autocmd BufEnter *.jrag :setlocal filetype=java
 
+" Don't fold git commit information
+autocmd FileType gitcommit setlocal nofoldenable
+
+" Change default browser when previewing markdown
+let vim_markdown_preview_browser='firefox'
+
 " cycle through yank stack
 nmap <c-P> <Plug>yankstack_substitute_older_paste
 nmap <c-P> <Plug>yankstack_substitute_newer_paste
@@ -73,15 +76,14 @@ nmap <c-P> <Plug>yankstack_substitute_newer_paste
 " shortkey for mru (Most Recently Used [Directories])
 noremap <Leader>T :MRU<CR>
 
-" To improve performance, use FastFold plugin
-let g:vimsyn_folding='af'
-
 " Create a shortcut for doxygen comments
 nnoremap <leader>D :Dox<CR>
 
 " make the powerline work proper
-" set laststatus=2
-" let g:airline_theme='simple'
+set laststatus=2
+let g:airline_powerline_fonts = 1
+let g:airline_theme='molokai'
+set encoding=utf-8
 
 "to make neocompelete working
 let g:neocomplete#enable_at_startup = 1
@@ -92,7 +94,6 @@ let g:neocomplete#sources#syntax#min_keyword_length = 2
 
 " Settings for restore_view
 set viewoptions=cursor,folds,slash,unix
-" let g:skipview_files = ['*\.vim']
 
 let g:LatexBox_latexmk_preview_continuously=1
 let g:LatexBox_latexmk_async=1
@@ -114,6 +115,7 @@ vmap <c-v> <Plug>(expand_region_shrink)
 
 "shortkey for nerdtree
 nnoremap <leader>t :NERDTreeToggle<CR>
+autocmd BufEnter * lcd %:p:h
 
 " for nerdcommenter
 " Add spaces after comment delimiters by default
@@ -137,6 +139,11 @@ let g:syntastic_check_on_open = 1
 let g:Syntastic_enable_signs = 1
 let g:syntastic_check_on_wq = 0
 let g:syntastic_java_javac_delete_output = 0
+
+:map <leader>e @:
+
+" double spacebar opens last file again
+:nnoremap <leader><leader> :e#<CR>
 
 " for smooth scrolling
 set so=5
@@ -232,6 +239,7 @@ nnoremap < za
 nnoremap > zA
 nnoremap <leader>< zM
 nnoremap <leader>> zR
+autocmd FileType gitcommit setlocal nofoldenable
 
 "stop highlighting
 nnoremap <esc> :noh<return><esc>
@@ -278,8 +286,30 @@ nnoremap <leader>r :%s/
 nnoremap <leader>o o<esc>^Dk
 nnoremap <leader>O O<esc>^Dj
 
-" Switch between files with ,,
-" nnoremap <leader><leader> <c-^>
+function! GetCurrentColorScheme()
+    if !has('gui_running')
+        return 'solarized'
+    endif
+    let l:dayOfWeek = strftime('%a')
+    if l:dayOfWeek ==# 'Sat'
+        return 'gruvbox'
+    endif
+    if l:dayOfWeek ==# 'Sun'
+        return 'PaperColor'
+    endif
+    return 'solarized'
+endfunction
+
+function! GetCurrentBackground()
+    if !has('gui_running')
+        return 'dark'
+    endif
+    " return (strftime('%H') > 6 && strftime('%H') < 18) ? 'light' : 'dark'
+    return (strftime('%H') > 6 && strftime('%H') < 18) ? 'dark' : 'dark'
+endfunction
+
+exec 'set background=' . GetCurrentBackground()
+exec 'colorscheme ' . GetCurrentColorScheme()
 
 " change directory when entering file
 set autochdir

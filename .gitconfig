@@ -1,3 +1,5 @@
 [user]
-	name = natzer
+	name = CodingJonas
 	email = jonas.natzer@gmail.com
+[push]
+	default = simple
