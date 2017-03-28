@@ -19,3 +19,7 @@ ln -sv ${BASEDIR}/.dircolors ~/.dircolors
 
 # i3 config files
 ln -sv ${BASEDIR}/i3 ~/.config/i3
+
+# neovim config files
+ln -sv ${BASEDIR/init.vim ~/.config/nvim/init.vim
+

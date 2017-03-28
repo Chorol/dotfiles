@@ -13,7 +13,6 @@ call neobundle#begin(expand('~/.vim/bundle/'))
 " Let NeoBundle manage NeoBundle
 NeoBundleFetch 'Shougo/neobundle.vim'
 
-"Plugin 'scrooloose/syntastic'
 NeoBundle 'scrooloose/nerdcommenter'
 NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'terryma/vim-expand-region'
@@ -28,7 +27,8 @@ NeoBundle 'sheerun/vim-polyglot'
 NeoBundle 'vim-airline/vim-airline'
 NeoBundle 'vim-airline/vim-airline-themes'
 NeoBundle 'JamshedVesuna/vim-markdown-preview'
-NeoBundle 'Raimondi/delimitMate'
+NeoBundle 'jiangmiao/auto-pairs'
+" NeoBundle 'vim-syntastic/syntatic'
 
 "latex
 NeoBundleLazy 'LaTeX-Box-Team/LaTeX-Box'
@@ -85,12 +85,8 @@ let g:airline_powerline_fonts = 1
 let g:airline_theme='molokai'
 set encoding=utf-8
 
-"to make neocompelete working
-let g:neocomplete#enable_at_startup = 1
-" Use smartcase.
-let g:neocomplete#enable_smart_case = 1
-" Set minimum syntax keyword length.
-let g:neocomplete#sources#syntax#min_keyword_length = 2
+" add openframeworks completion
+let g:ycm_global_ycm_extra_conf = "~/.vim/.ycm_extra_conf_openframeworks.py"
 
 " Settings for restore_view
 set viewoptions=cursor,folds,slash,unix
@@ -133,12 +129,15 @@ nnoremap <silent> <leader>pw :call WindowSwap#DoWindowSwap()<CR>
 nnoremap <silent> <leader>w :call WindowSwap#EasyWindowSwap()<CR>
 
 "Syntastic
+" set statusline+=%#warningmsg#
+" set statusline+=%{SyntasticStatuslineFlag()}
+" set statusline+=%*
+
+let g:syntastic_cpp_include_dirs = ['~/Openframework/*']
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:Syntastic_enable_signs = 1
+let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
-let g:syntastic_java_javac_delete_output = 0
 
 :map <leader>e @:
 
