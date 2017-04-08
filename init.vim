@@ -45,12 +45,23 @@ Plug 'tell-k/vim-autopep8', {'for': 'python'}
 
 " Auto-complete
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'zchee/deoplete-clang'
+Plug 'Shougo/neoinclude.vim'
+" Plug 'LuXuryPro/deoplete-rtags'
 
-" Show function signature from autocompletion
+" Show function signature from autocompletion TODO: not working currently
 Plug 'Shougo/echodoc.vim'
 
+" Improve status line
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+" Syntax checking
+" Plug 'vim-syntastic/syntastic'
+Plug 'w0rp/ale'
+
+
 call plug#end()
+filetype plugin indent on
 
 """""""""""""""""""""""""""""""""""""""""
 """""""""""PLUGIN KEY MAPPINGS"""""""""""
@@ -73,13 +84,21 @@ autocmd FileType cpp setlocal commentstring=//\ %s
 
 """""" vim-expand-region
 vmap v <Plug>(expand_region_expand)
-vmap <c-v> <Plug>(expand_region_shrink
+vmap <c-v> <Plug>(expand_region_shrink)
 
 """""" vim-windowswap
 let g:windowswap_map_keys = 0 "prevent default bindings
 nnoremap <silent> <leader>yw :call WindowSwap#MarkWindowSwap()<CR>
 nnoremap <silent> <leader>pw :call WindowSwap#DoWindowSwap()<CR>
 nnoremap <silent> <leader>w :call WindowSwap#EasyWindowSwap()<CR>
+
+""""" auto-pair
+inoremap {{ {
+inoremap }} }
+inoremap (( (
+inoremap )) )
+inoremap "" "
+inoremap '' '
 
 """"" vim-clang-format
 let g:clang_format#detect_style_file = 1
@@ -94,11 +113,47 @@ autocmd FileType python noremap <leader>f :Autopep8()<CR>
 
 """"" deoplete
 let g:deoplete#enable_at_startup = 1
-" deoplete tab-complete
-inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+let g:deoplete#sources = {}
+let g:deoplete#sources._ = ['buffer', 'tag']
+let deoplete#tag#cache_limit_size = 5000000
+inoremap <silent><expr> <TAB>
+		\ pumvisible() ? "\<C-n>" :
+		\ <SID>check_back_space() ? "\<TAB>" :
+		\ deoplete#mappings#manual_complete()
+		function! s:check_back_space() abort "{{{
+		let col = col('.') - 1
+		return !col || getline('.')[col - 1]  =~ '\s'
+		endfunction"}}}
 
 """"" echodoc
 set noshowmode
+
+""""" vim airline
+let g:airline_powerline_fonts = 1
+let g:airline_section_y = {}  "shows the formatting, I don't care about that
+let g:airline#extensions#ale#error_symbol="✗ "
+let g:airline#extensions#ale#warning_symbol="⚠ "
+
+"""" ale
+let g:ale_echo_msg_error_str = '✗'
+let g:ale_echo_msg_warning_str = '⚠'
+let g:ale_sign_error = '✗'
+let g:ale_sign_warning = '⚠'
+let g:ale_statusline_format = ['✗ %d', '⚠ %d', '⬥ ok']
+let g:ale_open_list = 1
+" Close vim if the only window left is a quickfix window
+autocmd bufenter * if (&buftype == 'quickfix') | q | endif
+
+""""" syntasics
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_error_symbol = "✗"
+let g:syntastic_cpp_compiler_options = "-std=c++11 -Wall -Wextra -Wpedantic"
 
 """"""""""""""""""""""""""""""""""""""""
 """""""""""" GENERAL SETTINGS""""""""""""
@@ -109,14 +164,10 @@ set viewoptions=cursor,folds,slash,unix
 " Change the cursor shape in insert mode
 let $NVIM_TUI_ENABLE_CURSOR_SHAPE=2
 
+set timeoutlen=300
+
 " For smooth scrolling
 set so=5
-
-" Hide toolbar+scrollbars
-set guioptions-=m  " Remove menu bar
-set guioptions-=T  " Remove toolbar
-set guioptions-=r  " Remove right-hand scrollbar
-set guioptions-=L  " Remove left-hand scroll bar
 
 " Show last command
 set showcmd
@@ -229,14 +280,20 @@ autocmd BufWritePre * :%s/\s\+$//e
 " Autosave if focus lost
 au FocusLost * :wa
 
+" go easily through the loclist
+nnoremap <leader>K :lprevious<cr>
+nnoremap <leader>J :lnext<cr>
+
 " Double space opens last file again
 noremap <leader><leader> :w<CR>:e#<CR>
 
 " Execute last command again
 noremap <leader>e @:
 
-" Close Window
+" Close window
 nnoremap <leader>q :q<cr>
+" Close terminal mode
+:tnoremap <Esc> <C-\><C-n>
 
 " Copy&paste
 nnoremap <leader>p "+p
@@ -285,6 +342,7 @@ function! ScreenMovement(movement)
         return a:movement
     endif
 endfunction
+
 onoremap <silent> <expr> j ScreenMovement("j")
 onoremap <silent> <expr> k ScreenMovement("k")
 onoremap <silent> <expr> 0 ScreenMovement("0")
